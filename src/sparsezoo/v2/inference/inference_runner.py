@@ -15,22 +15,27 @@
 Helper class for running inference using
 the selected engine and input/output files
 """
+from __future__ import annotations
 import os
 from collections import OrderedDict
 from pathlib import Path
-from typing import Callable, Generator, List
+from typing import Callable, Generator, List, TYPE_CHECKING
 
 import numpy
 import onnx
 
 import onnxruntime as ort
 from sparsezoo.utils.numpy import save_numpy
-from sparsezoo.v2.inference.engines import ENGINES
 from sparsezoo.v2.objects.file import File
-from sparsezoo.v2.objects.model_objects import NumpyDirectory
 
 
-__all__ = ["InferenceRunner"]
+if TYPE_CHECKING:
+    from sparsezoo.v2.objects import File, NumpyDirectory
+
+
+__all__ = ["InferenceRunner", "ENGINES"]
+
+ENGINES = ["onnxruntime", "deepsparse"]
 
 
 class InferenceRunner:

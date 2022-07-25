@@ -18,8 +18,7 @@ from typing import Dict, Union
 
 import requests
 
-from sparsezoo.v2.utils.authentication import get_auth_header
-
+from sparsezoo.v2.download.authentication import get_auth_header
 
 BASE_API_URL = (
     os.getenv("SPARSEZOO_API_URL")
@@ -27,7 +26,6 @@ BASE_API_URL = (
     else "https://api.neuralmagic.com"
 )
 MODELS_API_URL = f"{BASE_API_URL}/models"
-
 
 __all__ = ["download_get_request"]
 
@@ -37,10 +35,10 @@ DOWNLOAD_PATH = "download"
 
 
 def download_get_request(
-    args: str,
-    base_url: str = MODELS_API_URL,
-    sub_path: Union[str, None] = None,
-    force_token_refresh: bool = False,
+        args: str,
+        base_url: str = MODELS_API_URL,
+        sub_path: Union[str, None] = None,
+        force_token_refresh: bool = False,
 ) -> Dict:
     """
     Get a downloadable object from the sparsezoo for any objects matching the args

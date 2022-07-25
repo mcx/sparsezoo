@@ -23,9 +23,7 @@ import shutil
 from pathlib import Path
 from typing import List, Optional, Union
 
-from sparsezoo.v2.objects.directory import Directory
-from sparsezoo.v2.objects.file import File
-from sparsezoo.v2.objects.model_objects import NumpyDirectory
+from sparsezoo.v2 import objects
 
 
 __all__ = ["setup_model"]
@@ -33,21 +31,21 @@ __all__ = ["setup_model"]
 
 def setup_model(
     output_dir: str,
-    training: Union[str, Directory, List[Union[str, Directory]]],
-    deployment: Union[str, Directory, List[Union[str, Directory]]],
-    onnx_model: Union[File, str],
-    sample_inputs: Union[str, NumpyDirectory],
+    training: Union[str, objects.Directory, List[Union[str, objects.Directory]]],
+    deployment: Union[str, objects.Directory, List[Union[str, objects.Directory]]],
+    onnx_model: Union[objects.File, str],
+    sample_inputs: Union[str, objects.NumpyDirectory],
     sample_outputs: Union[
-        List[Union[str, NumpyDirectory]], str, NumpyDirectory, None
+        List[Union[str, objects.NumpyDirectory]], str, objects.NumpyDirectory, None
     ] = None,
-    sample_labels: Union[Directory, str, None] = None,
-    sample_originals: Union[Directory, str, None] = None,
-    logs: Union[Directory, str, None] = None,
-    analysis: Union[File, str, None] = None,
-    benchmarks: Union[File, str, None] = None,
-    eval_results: Union[File, str, None] = None,
-    model_card: Union[File, str, None] = None,
-    recipes: Union[List[Union[str, File]], str, File, None] = None,
+    sample_labels: Union[objects.Directory, str, None] = None,
+    sample_originals: Union[objects.Directory, str, None] = None,
+    logs: Union[objects.Directory, str, None] = None,
+    analysis: Union[objects.File, str, None] = None,
+    benchmarks: Union[objects.File, str, None] = None,
+    eval_results: Union[objects.File, str, None] = None,
+    model_card: Union[objects.File, str, None] = None,
+    recipes: Union[List[Union[str, objects.File]], str, objects.File, None] = None,
 ) -> None:
     """
 
@@ -105,7 +103,7 @@ def setup_model(
                 for idx, _file in enumerate(file):
                     if isinstance(_file, str):
                         file[idx] = _create_file_from_path(_file)
-                    elif isinstance(_file, File):
+                    elif isinstance(_file, objects.File):
                         continue
                     else:
                         raise ValueError(
@@ -121,18 +119,18 @@ def setup_model(
 
 def _create_file_from_path(
     path: str,
-) -> Union[File, Directory]:
+) -> Union[objects.File, objects.Directory]:
     # create a File or Directory given a path
-    file = File(name=os.path.basename(path), path=path)
+    file = objects.File(name=os.path.basename(path), path=path)
     if os.path.isdir(path):
-        directory = Directory.from_file(file=file)
+        directory = objects.Directory.from_file(file=file)
         return directory
     else:
         return file
 
 
 def _copy_file_contents(
-    output_dir: str, file: Union[File, Directory], name: Optional[str] = None
+    output_dir: str, file: Union[objects.File, objects.Directory], name: Optional[str] = None
 ) -> None:
     # optional argument `name` only used to make sure
     # that the names of the saved folders are consistent
@@ -145,7 +143,7 @@ def _copy_file_contents(
                 Path(os.path.join(output_dir, name)).mkdir(parents=True, exist_ok=True)
                 copy_path = os.path.join(output_dir, name, _file.name)
                 copy_func = (
-                    shutil.copytree if isinstance(_file, Directory) else shutil.copyfile
+                    shutil.copytree if isinstance(_file, objects.Directory) else shutil.copyfile
                 )
                 _copy_and_overwrite(_file.path, copy_path, copy_func)
         else:
@@ -158,7 +156,7 @@ def _copy_file_contents(
             for _file in file:
                 copy_path = os.path.join(output_dir, os.path.basename(_file.path))
                 _copy_and_overwrite(_file.path, copy_path, shutil.copyfile)
-        elif isinstance(file, Directory):
+        elif isinstance(file, objects.Directory):
             copy_path = os.path.join(output_dir, os.path.basename(file.path))
             _copy_and_overwrite(file.path, copy_path, shutil.copytree)
         else:

@@ -13,7 +13,7 @@
 # limitations under the License.
 
 """
-Code related to base functionality for making requests
+Code related to base functionality for making download
 """
 
 import os
@@ -88,7 +88,7 @@ def parse_zoo_stub(
 
 class ModelArgs:
     """
-    Arguments for making requests into the sparsezoo
+    Arguments for making download into the sparsezoo
 
     :param domain: The domain of the model the object belongs to;
         e.g. cv, nlp
@@ -345,7 +345,7 @@ class ModelArgs:
 
 class RecipeArgs(ModelArgs):
     """
-    Arguments for making recipe requests into the sparsezoo
+    Arguments for making recipe download into the sparsezoo
 
     :param domain: The domain of the model the object belongs to;
         e.g. cv, nlp

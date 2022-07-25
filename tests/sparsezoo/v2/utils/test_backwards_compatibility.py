@@ -16,7 +16,7 @@ import os
 
 import pytest
 
-from sparsezoo.v2.requests.requests import download_get_request
+from sparsezoo.v2.download.requests import download_get_request
 from sparsezoo.v2.utils.backwards_compatibility import restructure_request_json
 
 

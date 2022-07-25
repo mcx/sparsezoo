@@ -19,12 +19,12 @@ from typing import Any, Dict, Generator, List, Optional, Union
 
 import numpy
 
-from sparsezoo.v2.inference.engines import ENGINES
-from sparsezoo.v2.inference.inference_runner import InferenceRunner
+from sparsezoo.v2.inference import InferenceRunner, ENGINES
+from sparsezoo.v2.validation.validator import IntegrationValidator
 from sparsezoo.v2.objects.directory import Directory, is_directory
 from sparsezoo.v2.objects.file import File
-from sparsezoo.v2.objects.model_objects import NumpyDirectory, SelectDirectory
-from sparsezoo.v2.utils.model_utils import (
+from sparsezoo.v2.objects.directory_objects import NumpyDirectory, SelectDirectory
+from sparsezoo.v2.utils.model import (
     ZOO_STUB_PREFIX,
     generate_model_name,
     load_files_from_directory,
@@ -177,10 +177,6 @@ class Model(Directory):
             path=self.path,
             url=url,
         )
-
-        # importing the class here, otherwise a circular import error is being raised
-        # (IntegrationValidator script also imports Model class object)
-        from sparsezoo.v2.validation.validator import IntegrationValidator
 
         self.integration_validator = IntegrationValidator(model=self)
 

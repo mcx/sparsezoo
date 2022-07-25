@@ -19,8 +19,8 @@ import string
 import warnings
 from typing import Any, Dict, List, Optional, Tuple
 
-from sparsezoo.v2.requests.requests import download_get_request
-from sparsezoo.v2.utils.backwards_compatibility import restructure_request_json
+from sparsezoo.v2.download import download_get_request
+from sparsezoo.v2.utils import restructure_request_json
 
 
 __all__ = ["load_files_from_stub", "load_files_from_directory", "generate_model_name"]

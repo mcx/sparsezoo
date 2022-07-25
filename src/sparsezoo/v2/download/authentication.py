@@ -23,7 +23,7 @@ from typing import Dict
 import requests
 import yaml
 
-
+__all__ = ["get_auth_header"]
 BASE_API_URL = (
     os.getenv("SPARSEZOO_API_URL")
     if os.getenv("SPARSEZOO_API_URL")

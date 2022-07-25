@@ -16,20 +16,19 @@
 Validator class that checks, whether the contents of ModelDirectory
 class objects are valid
 """
-
+from __future__ import annotations
 import os
-from typing import Callable, Dict, Optional, Set, Tuple, Union
+from typing import Callable, Dict, Optional, Set, Tuple, Union, TYPE_CHECKING
 
-from sparsezoo.v2.objects.directory import Directory
-from sparsezoo.v2.objects.file import File
-from sparsezoo.v2.objects.model import Model
-from sparsezoo.v2.validation.integrations import (
+from sparsezoo.v2 import objects
+from .integrations import (
     validate_cv_classification,
     validate_cv_detection,
     validate_cv_segmentation,
     validate_nlp,
 )
-
+if TYPE_CHECKING:
+    from sparsezoo.v2 import objects
 
 __all__ = ["IntegrationValidator"]
 
@@ -60,7 +59,7 @@ class IntegrationValidator:
 
     def __init__(
         self,
-        model: Model,
+        model: objects.Model,
         required_files: Set[str] = REQUIRED_FILES,
         integration_to_data: Dict[str, Callable] = INTEGRATION_NAME_TO_DATA,
     ):
@@ -163,7 +162,7 @@ class IntegrationValidator:
 
     def validate_directory(
         self,
-        directory: Directory,
+        directory: objects.Directory,
         validation_files: Set,
         optional_validation_files: Optional[Set] = set(),
     ) -> bool:
@@ -183,12 +182,12 @@ class IntegrationValidator:
         # into loose files and subdirectories
         loose_files, subdirectories = [], []
         for file in directory.files:
-            (loose_files, subdirectories)[isinstance(file, Directory)].append(file)
+            (loose_files, subdirectories)[isinstance(file, objects.Directory)].append(file)
 
         # parse subdirectories in the
         # recursive manner
         for subdirectory in subdirectories:
-            if isinstance(file, Directory):
+            if isinstance(file, objects.Directory):
                 self.validate_directory(
                     directory=subdirectory,
                     validation_files=validation_files,
@@ -213,16 +212,16 @@ class IntegrationValidator:
         return True
 
     def _get_integration_data(
-        self, model_card: Union[str, File]
+        self, model_card: Union[str, objects.File]
     ) -> Tuple[Set, Set, Set]:
         integration_name = self._get_integration_name(model_card)
         return self.integration_to_data[integration_name]
 
     @staticmethod
-    def _get_integration_name(model_card: Union[str, File]):
+    def _get_integration_name(model_card: Union[str, objects.File]):
         if isinstance(model_card, str):
             name = os.path.basename(model_card)
-            model_card = File(name=name, path=model_card)
+            model_card = objects.File(name=name, path=model_card)
 
         yaml_dict = model_card._validate_model_card()
 

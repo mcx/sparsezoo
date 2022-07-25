@@ -13,7 +13,7 @@
 # limitations under the License.
 
 """
-Classes for making requests with the sparsezoo
+Classes for making download with the sparsezoo
 """
 
 # flake8: noqa
