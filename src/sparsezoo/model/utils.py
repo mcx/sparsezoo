@@ -122,24 +122,43 @@ def load_files_from_stub(
     params = None
     if isinstance(stub, str):
         stub, params = parse_zoo_stub(stub=stub, valid_params=valid_params)
-    _LOGGER.debug(f"load_files_from_stub: loading files from {stub}")
-    response = download_get_request(
-        args=stub,
-        force_token_refresh=force_token_refresh,
-    )
 
-    # piece of code required for backwards compatibility
-    model_response = response.get("model", {})
-    files = model_response.get("files", [])
-    files = restructure_request_json(request_json=files)
-    compressed_file_size = _get_compressed_size(files=files)
-    model_id = model_response.get("model_id")
-    if params is not None:
-        files = filter_files(files=files, params=params)
+    # if there is forward slash, then its a new stub
+    if "/" in stub:
+        # continue with the current flow
+        _LOGGER.debug(f"load_files_from_stub: loading files from {stub}")
+        response = download_get_request(
+            args=stub,
+            force_token_refresh=force_token_refresh,
+        )
 
-    model_results = model_response.get("results")
-    validation_results = _parse_validation_metrics(model_results_response=model_results)
-    return files, model_id, params, validation_results, compressed_file_size
+        # piece of code required for backwards compatibility
+        model_response = response.get("model", {})
+        files = model_response.get("files", [])
+        files = restructure_request_json(request_json=files)
+        compressed_file_size = _get_compressed_size(files=files)
+        model_id = model_response.get("model_id")
+        if params is not None:
+            files = filter_files(files=files, params=params)
+
+        model_results = model_response.get("results")
+        validation_results = _parse_validation_metrics(model_results_response=model_results)
+        return files, model_id, params, validation_results, compressed_file_size
+
+    else: 
+        # Example: roberta-base-squad_wikipedia_bookcorpus-pruned85_quantized	
+        # make graphql qpi call with the stub, where repo_name = stub
+        #   get all the relevant fields modelId, fields, ...,
+        api = GrpahqQLAPI()
+        api.fetch(
+            fields = {}
+        )
+        pass
+
+    # edit query parser so we can input fields with a dict?
+
+
+    
 
 
 def filter_files(
