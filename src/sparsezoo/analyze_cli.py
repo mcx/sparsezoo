@@ -78,7 +78,13 @@ LOGGER = logging.getLogger()
 @click.command(context_settings=CONTEXT_SETTINGS)
 @analyze_options
 @sparsezoo_analytics.send_event_decorator("cli__main")
-def main(model_path: str, save: Optional[str], by_types: Optional[str], **kwargs):
+def main(
+    model_path: str,
+    save: Optional[str],
+    by_types: Optional[str],
+    by_layer: Optional[str],
+    **kwargs,
+):
     """
     Model analysis for ONNX models.
 
@@ -93,7 +99,7 @@ def main(model_path: str, save: Optional[str], by_types: Optional[str], **kwargs
     """
     logging.basicConfig(level=logging.INFO)
 
-    for unimplemented_feat in ("compare", "by_layer", "save_graphs"):
+    for unimplemented_feat in ("compare", "save_graphs"):
         if kwargs.get(unimplemented_feat):
             raise NotImplementedError(
                 f"--{unimplemented_feat} has not been implemented yet"
@@ -103,8 +109,11 @@ def main(model_path: str, save: Optional[str], by_types: Optional[str], **kwargs
     analysis = ModelAnalysis.create(model_path)
     LOGGER.info("Analysis complete, collating results...")
 
+    by_types = convert_to_bool(by_types)
+    by_layer = convert_to_bool(by_layer)
+
     summary = analysis.summary(
-        by_types=convert_to_bool(by_types),
+        by_types=by_types,
     )
     summary.pretty_print()
 
