@@ -645,7 +645,7 @@ class ModelAnalysisSummary(Entry, YAMLSerializableBaseModel):
 
     @classmethod
     def from_model_analysis(
-        cls, analysis: "ModelAnalysis", by_types: bool = False, by_layer: bool = False
+        cls, analysis: "ModelAnalysis", by_types: bool = False, by_layers: bool = False
     ) -> "ModelAnalysisSummary":
         """
         Factory method to generate a ModelAnalysisSummary object from a
@@ -655,13 +655,12 @@ class ModelAnalysisSummary(Entry, YAMLSerializableBaseModel):
             ModelAnalysisSummary object will summarize
         :param by_types: flag to summarize analysis information by param and
             op type
-        :param by_layer: flag to summarize analysis information by layers
+        :param by_layers: flag to summarize analysis information by layers
         """
         sections = []
 
-        if by_layer:
-            # TODO: Add analysis by_layers section
-            _LOGGER.info("analysis `by_layer` is not implemented yet, will be ignored")
+        if by_layers:
+            _LOGGER.info("Running `by_layers` analysis")
 
         # Add Param analysis section
         param_count_summary: CountSummary = _get_param_count_summary(analysis=analysis)
@@ -777,6 +776,37 @@ class ModelAnalysisSummary(Entry, YAMLSerializableBaseModel):
 
         sections.extend([param_section, ops_section, overall_section])
         return cls(sections=sections)
+
+    @classmethod
+    def _get_base_analysis_sections(cls, analysis):
+        param_count_summary: CountSummary = _get_param_count_summary(analysis=analysis)
+        param_section = Section(
+            section_name="Params",
+            entries=[
+                SizedModelEntry(
+                    model=analysis.model_name,
+                    count=param_count_summary.total,
+                    size=param_count_summary.size,
+                    sparsity=param_count_summary.sparsity,
+                    quantized=param_count_summary.quantized,
+                ),
+            ],
+        )
+        # Add Ops analysis section
+        ops_count_summary: CountSummary = _get_ops_count_summary(analysis=analysis)
+        ops_section = Section(
+            section_name="Ops",
+            entries=[
+                SizedModelEntry(
+                    model=analysis.model_name,
+                    count=ops_count_summary.total,
+                    size=ops_count_summary.size,
+                    sparsity=ops_count_summary.sparsity,
+                    quantized=ops_count_summary.quantized,
+                ),
+            ],
+        )
+        return ops_count_summary, ops_section, param_count_summary, param_section
 
 
 class ModelAnalysis(YAMLSerializableBaseModel):

@@ -82,7 +82,7 @@ def main(
     model_path: str,
     save: Optional[str],
     by_types: Optional[str],
-    by_layer: Optional[str],
+    by_layers: Optional[str],
     **kwargs,
 ):
     """
@@ -110,11 +110,11 @@ def main(
     LOGGER.info("Analysis complete, collating results...")
 
     by_types = convert_to_bool(by_types)
-    by_layer = convert_to_bool(by_layer)
+    by_layers = convert_to_bool(by_layers)
 
     summary = analysis.summary(
         by_types=by_types,
-        by_layer=by_layer,
+        by_layers=by_layers,
     )
     summary.pretty_print()
 
