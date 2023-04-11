@@ -114,6 +114,7 @@ def main(
 
     summary = analysis.summary(
         by_types=by_types,
+        by_layer=by_layer,
     )
     summary.pretty_print()
 

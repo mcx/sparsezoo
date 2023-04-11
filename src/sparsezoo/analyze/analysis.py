@@ -645,7 +645,7 @@ class ModelAnalysisSummary(Entry, YAMLSerializableBaseModel):
 
     @classmethod
     def from_model_analysis(
-        cls, analysis: "ModelAnalysis", by_types: bool = False, by_layers: bool = False
+        cls, analysis: "ModelAnalysis", by_types: bool = False, by_layer: bool = False
     ) -> "ModelAnalysisSummary":
         """
         Factory method to generate a ModelAnalysisSummary object from a
@@ -655,11 +655,11 @@ class ModelAnalysisSummary(Entry, YAMLSerializableBaseModel):
             ModelAnalysisSummary object will summarize
         :param by_types: flag to summarize analysis information by param and
             op type
-        :param by_layers: flag to summarize analysis information by layers
+        :param by_layer: flag to summarize analysis information by layers
         """
         sections = []
 
-        if by_layers:
+        if by_layer:
             # TODO: Add analysis by_layers section
             _LOGGER.info("analysis `by_layer` is not implemented yet, will be ignored")
 
