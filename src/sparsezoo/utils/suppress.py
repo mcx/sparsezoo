@@ -23,6 +23,9 @@ class NullDevice:
     def write(self, s):
         pass
 
+    def flush(self):
+        pass
+
 
 @contextmanager
 def suppress_stdout_stderr(suppress: bool = True):
