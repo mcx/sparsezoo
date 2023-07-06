@@ -107,7 +107,7 @@ def main(
             )
 
     _LOGGER.info("Starting Analysis ...")
-    analysis = ModelAnalysis.create(model_path)
+    analysis = ModelAnalysis.create(file_path=model_path)
     _LOGGER.info("Analysis complete, collating results...")
 
     by_types: bool = convert_to_bool(by_types)

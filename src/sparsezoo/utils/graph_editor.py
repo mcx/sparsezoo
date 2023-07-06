@@ -240,6 +240,14 @@ class ONNXGraph(object):
             ]
         )  # delete inits that have no edge
 
+    def is_qdq(self):
+        for node in self.model.graph.node:
+            is_quantize_linear = node.op_type == "QuantizeLinear"
+            init = self.get_init_by_name(node.name)
+            has_float_initializer = init and init.data_type == TensorProto.FLOAT
+            if is_quantize_linear and has_float_initializer:
+                return True
+        return False
     def _store_node_edges(self, node: NodeProto):
         for output_id in node.output:
             self._output_id_to_node[output_id] = node

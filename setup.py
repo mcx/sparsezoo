@@ -69,6 +69,7 @@ _dev_deps = [
     "sphinx-markdown-tables>=0.0.15",
     "sphinx-multiversion==0.2.4",
     "pytest>=6.0.0",
+    "pytest-lazy-fixture",
     "sphinx-rtd-theme",
     "wheel>=0.36.2",
     "onnxruntime>=1.0.0",

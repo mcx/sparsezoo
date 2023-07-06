@@ -27,7 +27,7 @@ from typing import Any, Dict, List, Optional, Union
 import numpy
 import onnx
 import yaml
-from onnx import ModelProto, NodeProto
+from onnx import ModelProto, NodeProto, TensorProto
 from pydantic import BaseModel, Field, PositiveFloat, PositiveInt
 
 from sparsezoo import Model
@@ -632,11 +632,11 @@ class CountSummary(BaseModel):
 
     @property
     def sparsity_percent(self):
-        return round(self.sparse_count * 100.0 / self.total, self._precision)
+        return round(self.sparse_count * 100.0 / self.total, self._precision) if self.total > 0 else 0
 
     @property
     def quantized_percent(self):
-        return round(self.quant_count * 100.0 / self.total, self._precision)
+        return round(self.quant_count * 100.0 / self.total, self._precision) if self.total > 0 else 0
 
     @property
     def size(self):
@@ -861,6 +861,10 @@ class ModelAnalysisSummary(Entry, YAMLSerializableBaseModel):
         return cls(sections=sections)
 
 
+
+
+
+
 class ModelAnalysis(YAMLSerializableBaseModel):
     """
     Pydantic model for analysis of a model
@@ -917,7 +921,11 @@ class ModelAnalysis(YAMLSerializableBaseModel):
             model_onnx = onnx.load(onnx_file_path)
             model_name = str(onnx_file_path)
 
+
         model_graph = ONNXGraph(model_onnx)
+
+        if model_graph.is_qdq():
+            print("Model is QDQ, needs to be converted to fully quantized first")
 
         node_analyses = cls.analyze_nodes(model_graph)
 
