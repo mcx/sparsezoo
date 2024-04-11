@@ -63,17 +63,16 @@ class FeatureStatus(str):
     YAML_HELP = _YAML_HELP_TEXT
     VALID_VALUES = list(_STATUS_TO_GITHUB_EMOJI.values())
 
+    def __init__(self, value):
+        FeatureStatus.validate(value)
+        super().__init__(value)
+
     def github_emoji(self) -> str:
         """
         :return: github emoji to represent this status code
         """
         self.validate(str(self))
         return _STATUS_TO_GITHUB_EMOJI[self]
-
-    @classmethod
-    def __get_validators__(cls):
-        # pydantic validation
-        yield cls.validate
 
     @classmethod
     def validate(cls, value):
